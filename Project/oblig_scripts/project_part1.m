@@ -21,7 +21,7 @@ setQuadMisalignments(0,0);
 runMADX;
 
 %% Importing beam in workspace
-% get initial beam 
+% Get initial beam 
 BEAM = getInitialBeam();
 mass = 0.511e-3; % GeV
 
@@ -33,15 +33,14 @@ gamma = energy/mass;
 
 
 %% Calculating RMS emittance
-% geometric
+% Geometric
 [Ex, Ey] = emittance(BEAM);
 
 fprintf("\n============================\n")
 fprintf("Geometric emittance: \n")
 fprintf("Ex = %d\nEy = %d\n",Ex,Ey)
 
-% normalized
-
+% Normalized
 fprintf("----------------------------\n")
 fprintf("Normalized emittance: \n")
 fprintf("Ex_norm = %d\nEy_norm = %d\n",beta*gamma*Ex,beta*gamma*Ey)
@@ -68,7 +67,7 @@ plot(ss, ys, "Linestyle", "-.", "Marker", "x", "Linewidth", 1);
 axs = gca;
 set(gcs, "TickLabelInterpreter", "Latex", "fontsize", 11);
 ylabel("Mean BPM positions [m]", "Interpreter", "Latex", "fontsize", 15);
-xlabel("BPM s-position [s]", "Interpreter", "Latex", "fontsize", 15);
+xlabel("BPM s-position [m]", "Interpreter", "Latex", "fontsize", 15);
 legend(axs, "$x$ orbit", "$y$ orbit", "Interpreter", "Latex",... 
         "fontsize", 15, "Location", "best");
 title("BPM orbit", "Fontsize", 18, "Interpreter", "Latex");
@@ -91,7 +90,7 @@ plot(ss, ys, "Linestyle", "-.", "Marker", "x", "Linewidth", 1);
 axs = gca;
 set(gcs, "TickLabelInterpreter", "Latex", "fontsize", 11);
 ylabel("Mean BPM positions [m]", "Interpreter", "Latex", "fontsize", 15);
-xlabel("BPM s-position [s]", "Interpreter", "Latex", "fontsize", 15);
+xlabel("BPM s-position [m]", "Interpreter", "Latex", "fontsize", 15);
 legend(axs, "$x$ orbit", "$y$ orbit", "Interpreter", "Latex",... 
         "fontsize", 15, "Location", "best");
 title("BPM orbit - misalignment", "Fontsize", 18, "Interpreter", "Latex");
@@ -120,7 +119,7 @@ dP = P1-P0;
 Disp_x = (x1-x0)*P0/dP;
 Disp_y = (y1-y0)*P0/dP;
 
-% plot dispersion function
+% Plot dispersion function
 fig3 = figure();
 plot(s,Disp_x,"Linestyle","--","Marker","none","linewidth",1.5)
 hold on
@@ -261,11 +260,11 @@ function [EmGrowthX, EmGrowthY] = EmittanceGrowth(misalign)
         resetKickers;
         runMADX;    
    
-        Beam0 = getInitialBeam();
-        Beam1 = getFinalBeam();
+        BEAM0 = getInitialBeam();
+        BEAM1 = getFinalBeam();
    
-        [ex0, ey0] = emittance(Beam0);
-        [ex1, ey1] = emittance(Beam1);
+        [ex0, ey0] = emittance(BEAM0);
+        [ex1, ey1] = emittance(BEAM1);
    
         EmGrowthX(i) = (ex1-ex0)/ex0;
         EmGrowthY(i) = (ey1-ey0)/ey0; 
