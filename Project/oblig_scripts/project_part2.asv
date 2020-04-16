@@ -122,7 +122,7 @@ title("Emittance growth - 1-to-1 correction","Fontsize",18,...
         "Interpreter","Latex");
 %saveas(gcf,"../Figures/growth_1-to-1_BPM","jpg");
 %}
-%{
+
 %% Dispersion-free steering
 % Get uncorrected trajectory
 resetKickers;
@@ -137,7 +137,7 @@ runMADX;
 [x0, y0, s0] = getBPMreadings();
 
 % Get DFS corrected orbits
-[x_c, y_c, s] = DFS(0.001);
+[x_c, y_c, s] = DFS(0.001, 0.001);
 
 % Plotting the orbits
 fig5 = figure();
@@ -154,13 +154,13 @@ legend(axs,"Original","Corrected","Interpreter","Latex","fontsize",...
 title("BPM orbit - DFS correction","Fontsize",18,"Interpreter","Latex");
 %saveas(gcf,"../Figures/DFS-orbits","jpg");
 
-
+%{
 %% Plot emittance growth DFS quadrupole misalignment
 setEnergy(1.0);
 BPMMis = 0.001;
 setBpmMisalignments(BPMMis,BPMMis);
 
-n_points = 10;
+n_points = 5;
 misalign = linspace(0,2e-3,n_points);
 
 resetKickers;
@@ -181,7 +181,7 @@ legend(axs,"DFS steer","Uncorrected","Interpreter","Latex",...
 title("Emittance growth - DFS correction","Fontsize",18,...
         "Interpreter","Latex");
 %saveas(gcf,"../Figures/growth_DFS","jpg");
-%}
+
 
 %% Plot emittance growth all BPM misalignment
 resetKickers;
@@ -217,7 +217,7 @@ title("Emittance growth - BPM misalignments","Fontsize",18,...
         "Interpreter","Latex");
 saveas(gcf,"../Figures/growth_all_BPM","jpg");
 
-
+%}
 %-----------------------------
 %% Functions:
 
@@ -281,7 +281,7 @@ function [EmGrowthX, EmGrowthY] = EmittanceGrowth(QuadMis,BPMMis,varargin)
     end
 end
 
-% DFS steering quadrupole
+% DFS steering 
 function [x,y,s] = DFS(QuadMis,BPMMis)
     % Get reference orbit 
     resetKickers;
@@ -298,12 +298,16 @@ function [x,y,s] = DFS(QuadMis,BPMMis)
     [Rx0, Ry0] = getResponseMatrix(0.0);
 
     % Get trajectories and response matrix for test beam
+    setEnergy(1.05);
+    setEnergyOffset(0.05)
     setQuadStrength(1.3);
     runMADX;
 
     [x1, y1] = getBPMreadings();
     [Rx1, Ry1] = getResponseMatrix(0.0);
-
+    
+    
+    
     setEnergy(1.0);
     setEnergyOffset(0.0);
     setQuadStrength(1.4142);

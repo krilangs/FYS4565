@@ -1,8 +1,10 @@
 clear all;
-%clf;
+%clc;
 
 % Set working folder
 cd C:\Users\krisl\.Matlab\FYS4565\Project\oblig_scripts\
+%status = mkdir("../Figures"); % Create folder to put saved figures,
+                               % figures not saved by default.
 
 % Add to path getters and setters
 addpath("get", "set");
@@ -19,6 +21,7 @@ setBpmMisalignments(0.0, 0.0);
 setQuadMisalignments(0,0);
 
 runMADX;
+
 
 %% Importing beam in workspace
 % Get initial beam 

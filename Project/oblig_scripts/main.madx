@@ -124,9 +124,9 @@ ESAVE, FILE = "bpmMisalignments.tfs";
 !   Pro-tip: Comment these lines out (with a !)
 !            to speed up execution somewhat.
 !-------------------------------------------------
-TWISS, CHROM, BETA0 = initial;
-PLOT, TABLE = twiss, FILE = "plots", INTERPOLATE, COLOUR = 100, HAXIS = S, VAXIS = BETX, BETY;
-PLOT, TABLE = twiss, FILE = "plots", INTERPOLATE, COLOUR = 100, HAXIS = S, VAXIS = DX, DY;
+!TWISS, CHROM, BETA0 = initial;
+!PLOT, TABLE = twiss, FILE = "plots", INTERPOLATE, COLOUR = 100, HAXIS = S, VAXIS = BETX, BETY;
+!PLOT, TABLE = twiss, FILE = "plots", INTERPOLATE, COLOUR = 100, HAXIS = S, VAXIS = DX, DY;
 
 !=================================================
 !  TRACKING PARTICLES

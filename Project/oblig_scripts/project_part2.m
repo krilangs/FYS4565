@@ -1,8 +1,10 @@
 clear all;
-%clf;
+%clc;
 
 % Set working folder
 cd C:\Users\krisl\.Matlab\FYS4565\Project\oblig_scripts\
+%status = mkdir("../Figures"); % Create folder to put saved figures,
+                               % figures not saved by default.
 
 % Add to path getters and setters
 addpath("get", "set");
@@ -20,9 +22,8 @@ setEnergyOffset(0.0);
 setQuadStrength(1.4142);
 setQuadMisalignments(0.001,0.001);
 setBpmMisalignments(0.0,0.0);
-
 runMADX;
-%{
+
 [x0,y0,s] = getBPMreadings();
 
 
@@ -45,7 +46,7 @@ title("BPM orbit - 1-to-1 corrected","Fontsize",18,"Interpreter","Latex");
 %saveas(gcf,"../Figures/1-to-1-orbits","jpg");
 
 
-%% Plot emittance growth 
+%% Plot emittance growth; 1-to-1 correction
 setEnergy(1.0);
 setEnergySpread(0.01);
 
@@ -71,7 +72,7 @@ title("Emittance growth - 1-to-1","Fontsize",18,"Interpreter","Latex");
 %saveas(gcf,"../Figures/growth_1-to-1","jpg");
 
 
-%% Introduce BPM misalignments
+%% Add BPM misalignments
 setBpmMisalignments(0.001,0.001);
 setQuadMisalignments(0.001,0.001);
 resetKickers;
@@ -96,7 +97,7 @@ title("BPM orbit - BPM misalignments 1-to-1","Fontsize",18,"Interpreter","Latex"
 %saveas(gcf,"../Figures/1-to-1-orbits_BPM","jpg");
 
 
-%% Plot emittance growth w/misalignments
+%% Plot emittance growth w/BPM misalignments
 setBpmMisalignments(0.001,0.001);
 setEnergySpread(0.01);
 
@@ -121,9 +122,9 @@ legend(axs,"1-to-1 steer","Uncorrected","Interpreter","Latex",...
 title("Emittance growth - 1-to-1 correction","Fontsize",18,...
         "Interpreter","Latex");
 %saveas(gcf,"../Figures/growth_1-to-1_BPM","jpg");
-%}
-%{
-%% Dispersion-free steering
+
+
+%% Add Dispersion-free steering
 % Get uncorrected trajectory
 resetKickers;
 setEnergy(1.0);
@@ -137,7 +138,7 @@ runMADX;
 [x0, y0, s0] = getBPMreadings();
 
 % Get DFS corrected orbits
-[x_c, y_c, s] = DFS(0.001);
+[x_c, y_c, s] = DFS(0.001, 0.001);
 
 % Plotting the orbits
 fig5 = figure();
@@ -155,7 +156,7 @@ title("BPM orbit - DFS correction","Fontsize",18,"Interpreter","Latex");
 %saveas(gcf,"../Figures/DFS-orbits","jpg");
 
 
-%% Plot emittance growth DFS quadrupole misalignment
+%% Plot emittance growth; DFS quadrupole misalignment
 setEnergy(1.0);
 BPMMis = 0.001;
 setBpmMisalignments(BPMMis,BPMMis);
@@ -181,19 +182,20 @@ legend(axs,"DFS steer","Uncorrected","Interpreter","Latex",...
 title("Emittance growth - DFS correction","Fontsize",18,...
         "Interpreter","Latex");
 %saveas(gcf,"../Figures/growth_DFS","jpg");
-%}
 
-%% Plot emittance growth all BPM misalignment
+
+%% Plot emittance growth; all corrections vs. BPM misalignment
 resetKickers;
 setEnergy(1.0);
 setQuadStrength(1.4142);
 setEnergySpread(0.01);
-setEnergyOffset(0);
+setEnergyOffset(0.0);
 QuadMis = 0.001;
 setQuadMisalignments(QuadMis,QuadMis);
 runMADX;
 
-BPMMis = linspace(0,0.01,10);
+n_points = 10;
+BPMMis = linspace(0,0.01,n_points);
 
 resetKickers;
 EmGrowthX0 = EmittanceGrowth_BPM(QuadMis,BPMMis,"none");
@@ -215,7 +217,7 @@ legend(axs,"Uncorrected","1-to-1","DFS","Interpreter",...
         "Latex","fontsize",15,"Location","best");
 title("Emittance growth - BPM misalignments","Fontsize",18,...
         "Interpreter","Latex");
-saveas(gcf,"../Figures/growth_all_BPM","jpg");
+%saveas(gcf,"../Figures/growth_all_BPM","jpg");
 
 
 %-----------------------------
@@ -244,7 +246,7 @@ function [Ex, Ey] = emittance(BEAM)
     
 end
 
-% Emittance growth
+% Emittance growth, quadrupole misalignments
 function [EmGrowthX, EmGrowthY] = EmittanceGrowth(QuadMis,BPMMis,varargin)
     EmGrowthX = zeros(size(QuadMis));
     EmGrowthY = zeros(size(QuadMis));
@@ -298,14 +300,15 @@ function [x,y,s] = DFS(QuadMis,BPMMis)
     [Rx0, Ry0] = getResponseMatrix(0.0);
 
     % Get trajectories and response matrix for test beam
-    setQuadStrength(1.3);
+    new_energy = 0.8;  
+    setEnergy(new_energy); 
+    setQuadStrength(1.4);
     runMADX;
 
     [x1, y1] = getBPMreadings();
     [Rx1, Ry1] = getResponseMatrix(0.0);
-
+    
     setEnergy(1.0);
-    setEnergyOffset(0.0);
     setQuadStrength(1.4142);
     % Set up kickers
     DthetaY = -pinv(Ry1-Ry0)*(y1-y0);
@@ -319,7 +322,7 @@ function [x,y,s] = DFS(QuadMis,BPMMis)
     
 end
 
-% Emittance growth BPM
+% Emittance growth, BPM misalignments
 function [EmGrowthX, EmGrowthY] = EmittanceGrowth_BPM(QuadMis,BPM,varargin)
     EmGrowthX = zeros(size(BPM));
     EmGrowthY = zeros(size(BPM));
