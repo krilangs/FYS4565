@@ -1,1 +1,1 @@
-# FYS4565
+# FYS4565 - Physics and Applications of Accelerators and Beams
